@@ -1,0 +1,1 @@
+pyinstaller -D -w --version-file="ver.txt" main.py --name="RustDeskApi"

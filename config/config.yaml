@@ -1,0 +1,7 @@
+db_type: "SQLite"
+database:
+    name: "./config/data.db"
+    username: "root"
+    password: "123456"
+    ip: "127.0.0.1"
+    port: 3306
