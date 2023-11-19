@@ -14,6 +14,17 @@ CREATE TABLE IF NOT EXISTS "peers" (
   "rdpUsername" text(255)
 );
 
+CREATE TABLE IF NOT EXISTS "system_info" (
+  "id" integer NOT NULL PRIMARY KEY AUTOINCREMENT,
+  "client_id" text(255),
+  "hostname" text(255),
+  "cpu" text(255),
+  "memory" text(255),
+  "os" text(255),
+  "uuid" text(255),
+  "version" text(255)
+);
+
 
 CREATE TABLE IF NOT EXISTS "tags" (
   "id" integer NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -28,7 +39,7 @@ CREATE TABLE IF NOT EXISTS "token" (
   "client_id" text(255),
   "uuid" text(255),
   "access_token" text(255),
-  "create_time" text
+  "create_time" text(255)
 );
 
 CREATE TABLE IF NOT EXISTS "users" (
@@ -40,8 +51,8 @@ CREATE TABLE IF NOT EXISTS "users" (
   "status" integer,
   "group" text(255),
   "is_admin" integer,
-  "create_time" text,
-  "update_time" text
+  "create_time" text(255),
+  "update_time" text(255)
 );
 
 CREATE UNIQUE INDEX IF NOT EXISTS "uid"

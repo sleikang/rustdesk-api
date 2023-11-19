@@ -1,1 +1,1 @@
-pyinstaller -D -w --version-file="ver.txt" main.py --name="RustDeskApi"
+pyinstaller -D --collect-all=sanic --collect-all=tracerite --version-file="ver.txt" main.py --name="RustDeskApi"

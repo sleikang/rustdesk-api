@@ -79,7 +79,7 @@ class DatabaseApi(object):
                 parameters=(username, password),
             )
             if not p or not len(data):
-                err = "账号不存在"
+                err = "账号不存在或密码错误"
                 return False, info, err
             token = uuid.uuid4().hex
             p, err = self.client.execution(
@@ -228,7 +228,7 @@ class DatabaseApi(object):
                         peer["hostname"],
                         peer["alias"],
                         peer["platform"],
-                        json.dumps(peer["tags"]),
+                        json.dumps(peer["tags"], ensure_ascii=False),
                         peer.get("forceAlwaysRelay", ""),
                         peer.get("rdpPort", ""),
                         peer.get("rdpUsername", ""),
@@ -296,6 +296,60 @@ class DatabaseApi(object):
             if not p:
                 err = "修改密码失败"
                 return False, err
+            return True, err
+        except Exception as result:
+            err = "异常错误, {}".format(result)
+
+        return False, err
+
+    def write_system_info(self, system_info):
+        err = None
+        try:
+            p, data, err = self.client.query(
+                sql="SELECT * FROM system_info where client_id = {0};".format(
+                    self.match_str
+                ),
+                parameters=(system_info["id"],),
+            )
+            if not p:
+                err = "写入系统信息失败, 无法检索系统信息是否存在"
+                return False, err
+            elif len(data):
+                p, err = self.client.execution(
+                    sql="UPDATE system_info SET hostname = {0}, cpu = {0}, memory = {0}, os = {0}, uuid = {0}, version = {0} WHERE client_id = {0};".format(
+                        self.match_str
+                    ),
+                    parameters=(
+                        system_info["hostname"],
+                        system_info["cpu"],
+                        system_info["memory"],
+                        system_info["os"],
+                        system_info["uuid"],
+                        system_info["version"],
+                        system_info["id"],
+                    ),
+                )
+                if not p:
+                    err = "写入系统信息失败"
+                    return False, err
+            else:
+                p, err = self.client.execution(
+                    sql="INSERT INTO system_info(client_id, hostname, cpu, memory, os, uuid, version) VALUES({0}, {0}, {0}, {0}, {0}, {0}, {0});".format(
+                        self.match_str
+                    ),
+                    parameters=(
+                        system_info["id"],
+                        system_info["hostname"],
+                        system_info["cpu"],
+                        system_info["memory"],
+                        system_info["os"],
+                        system_info["uuid"],
+                        system_info["version"],
+                    ),
+                )
+                if not p:
+                    err = "写入系统信息失败"
+                    return False, err
             return True, err
         except Exception as result:
             err = "异常错误, {}".format(result)
